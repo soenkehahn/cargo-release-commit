@@ -68,9 +68,9 @@ fn main() -> Result<()> {
     .confirm();
 
   if let Answer::YES = answer {
+    ("cargo", "publish").run_unit();
     ("git", "tag", tag_name).run_unit();
     ("git", "push", "origin", &version.to_string()).run_unit();
-    ("cargo", "publish").run_unit();
   }
   Ok(())
 }
