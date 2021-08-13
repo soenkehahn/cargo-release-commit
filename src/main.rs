@@ -69,7 +69,7 @@ fn main() -> Result<()> {
 
   if let Answer::YES = answer {
     (LogCommand, "cargo", "publish").run_unit();
-    (LogCommand, "git", "tag", tag_name).run_unit();
+    (LogCommand, "git", "tag", &tag_name).run_unit();
     (LogCommand, "git", "push", "origin", tag_name).run_unit();
   }
   Ok(())
