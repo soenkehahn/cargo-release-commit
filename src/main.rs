@@ -14,7 +14,7 @@ struct Arguments {
 fn main() -> Result<()> {
   let arguments = Arguments::from_args();
   let tempdir = tempdir()?;
-  let StdoutTrimmed(repo_url) = cmd!(%"git remote get-url origin");
+  let StdoutTrimmed(repo_url) = run_output!(%"git remote get-url origin");
   let current_dir = env::current_dir()?;
   let crate_name = current_dir
     .file_name()
@@ -28,7 +28,7 @@ fn main() -> Result<()> {
     &repo_url,
     crate_name,
   )
-    .run_unit();
+    .run();
   env::set_current_dir(tempdir.path().join(crate_name))?;
 
   (
@@ -38,10 +38,10 @@ fn main() -> Result<()> {
     &arguments.revision,
     "master",
   )
-    .run_unit();
-  ("git", "checkout", &arguments.revision).run_unit();
+    .run();
+  ("git", "checkout", &arguments.revision).run();
 
-  ("cargo", "publish", "--dry-run").run_unit();
+  ("cargo", "publish", "--dry-run").run();
 
   let metadata = MetadataCommand::new().exec()?;
 
@@ -68,9 +68,9 @@ fn main() -> Result<()> {
     .confirm();
 
   if let Answer::YES = answer {
-    (LogCommand, "cargo", "publish").run_unit();
-    (LogCommand, "git", "tag", &tag_name).run_unit();
-    (LogCommand, "git", "push", "origin", tag_name).run_unit();
+    (LogCommand, "cargo", "publish").run();
+    (LogCommand, "git", "tag", &tag_name).run();
+    (LogCommand, "git", "push", "origin", tag_name).run();
   }
   Ok(())
 }
